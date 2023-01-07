@@ -1,0 +1,39 @@
+pipeline {  
+     agent any  
+     stages {  
+         stage('Test') {  
+             steps {  
+                 sh 'echo "Fail!"; exit 1'  
+             }  
+         }  
+     }
+      post {  
+         always {  
+             echo 'This will always run'  
+         }  
+         success {  
+             echo 'This will run only if successful' 
+             mail body: "Project: ${env.JOB_NAME} <br>Build Number: ${env.BUILD_NUMBER} <br> Build URL: ${env.BUILD_URL}console", charset: 'UTF-8', mimeType: 'text/html', subject: "Adtech-DN | ${currentBuild.currentResult} | ${currentBuild.durationString}", to: "roshan.chandekar@nykaa.com";
+             emailext attachLog: true, subject: "Jenkins Build Status is ${currentBuild.currentResult} #${BUILD_ID}", body: "Hello there, \n\nStatus of this job is ${currentBuild.currentResult}\n Job Name is ${env.JOB_NAME}\n\n More info at: ${env.BUILD_URL}\n\n\n Regards,\n DevOps" , to: 'roshan.chandekar@nykaa.com'
+
+         }  
+         failure {  
+            echo 'This will run only if failure'
+            mail body: "Project: ${env.JOB_NAME} <br>Build Number: ${env.BUILD_NUMBER} <br> Build URL: ${env.BUILD_URL}console", charset: 'UTF-8', mimeType: 'text/html', subject: "Adtech-DN | ${currentBuild.currentResult} | ${currentBuild.durationString}", to: "roshan.chandekar@nykaa.com";
+            emailext attachLog: true, subject: "Jenkins Build Status is ${currentBuild.currentResult} #${BUILD_ID}", body: "Hello there, \n\nStatus of this job is ${currentBuild.currentResult}\n Job Name is ${env.JOB_NAME}\n\n More info at: ${env.BUILD_URL}\n\n\n Regards,\n DevOps" , to: 'roshan.chandekar@nykaa.com'
+
+         }  
+         unstable {  
+             echo 'This will run only if the run was marked as unstable'
+             mail body: "Project: ${env.JOB_NAME} <br>Build Number: ${env.BUILD_NUMBER} <br> Build URL: ${env.BUILD_URL}console", charset: 'UTF-8', mimeType: 'text/html', subject: "Adtech-DN | ${currentBuild.currentResult} | ${currentBuild.durationString}", to: "roshan.chandekar@nykaa.com";
+  
+         }  
+         changed {  
+             echo 'This will run only if the state of the Pipeline has changed'  
+             echo 'For example, if the Pipeline was previously failing but is now successful'
+             mail body: "Project: ${env.JOB_NAME} <br>Build Number: ${env.BUILD_NUMBER} <br> Build URL: ${env.BUILD_URL}console", charset: 'UTF-8', mimeType: 'text/html', subject: "Adtech-DN | ${currentBuild.currentResult} | ${currentBuild.durationString}", to: "roshan.chandekar@nykaa.com";
+  
+         }  
+     }  
+
+ }
